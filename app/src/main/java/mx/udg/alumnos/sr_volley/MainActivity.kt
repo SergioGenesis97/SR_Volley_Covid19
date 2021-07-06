@@ -1,19 +1,22 @@
 package mx.udg.alumnos.sr_volley
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.TextView
+import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
 import com.android.volley.Response
-import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.Volley
 import mx.udg.alumnos.sr_volley.Adapter.PaisesAdapter
+import org.json.JSONException
 
 class MainActivity : AppCompatActivity() {
 
+    lateinit var AdaptadorPaises:PaisesAdapter
     lateinit var miRecyclerCovid:RecyclerView
+    lateinit var arrayListaPaises:ArrayList<Pais>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,17 +24,57 @@ class MainActivity : AppCompatActivity() {
 
         miRecyclerCovid = findViewById(R.id.miRecyclerCovid)
 
+        arrayListaPaises = ArrayList<Pais>()
+
+        AdaptadorPaises = PaisesAdapter(arrayListaPaises, this)
+
+        //listaPaises.add(Pais("Mexico", 23, 0, 1))
+
+        miRecyclerCovid.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        miRecyclerCovid.adapter = PaisesAdapter(arrayListaPaises, this)
+
+        obtenerDatos()
+
+    }
+
+    fun obtenerDatos(){
+
+
         val queue = Volley.newRequestQueue(this)
         val url = "https://wuhan-coronavirus-api.laeyoung.endpoint.ainize.ai/jhu-edu/latest"
 
-        val listaPaises = ArrayList<Pais>()
+        val peticionDatosCovid = JsonArrayRequest(Request.Method.GET,
+            url,
+            null,
+        Response.Listener { response ->
+            Log.d("  Respuesta: ", response.toString())
 
-        listaPaises.add(Pais("Mexico", 23, 0, 1))
+            try {
+                for (index in 0..response.length()-1){
+                    val paisJSON = response.getJSONObject(index)
 
-        miRecyclerCovid.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+                    val nombrePais = paisJSON.getString("country")
+                    val numConfirmados = paisJSON.getInt("confirmed")
+                    val numMuertos = paisJSON.getInt("deaths")
+                    val numRecuperados = paisJSON.getInt("recovered")
 
-        miRecyclerCovid.adapter = PaisesAdapter(listaPaises, this)
+                    val paisIndividual = Pais(nombrePais, numConfirmados, numMuertos, numRecuperados)
+                    arrayListaPaises.add(paisIndividual)
+                }
+            }
+            catch (e:JSONException){
+                Log.wtf("   Error JSON: ", e.localizedMessage)
+            }
 
+        },
+        Response.ErrorListener { error ->  
+            Log.d("  Error_Vollye: ", error.localizedMessage)
+        })
 
+        queue.add(peticionDatosCovid)
+
+        AdaptadorPaises.notifyDataSetChanged()
     }
+
+
 }

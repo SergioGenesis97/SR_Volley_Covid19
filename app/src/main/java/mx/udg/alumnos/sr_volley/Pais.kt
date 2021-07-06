@@ -1,3 +1,3 @@
 package mx.udg.alumnos.sr_volley
 
-class Pais(var nombre:String, var confirmados:Int, var muertos:Int, var recuperados:Int)
+class Pais(var nombre:String = " ", var confirmados:Int = 0, var muertos:Int = 0, var recuperados:Int = 0)
