@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
 
         arrayListaPaises = ArrayList<Pais>()
 
-        AdaptadorPaises = PaisesAdapter(arrayListaPaises, this)
+        AdaptadorPaises = PaisesAdapter(arrayListaPaises!!, this)
 
         //listaPaises.add(Pais("Mexico", 23, 0, 1))
 
@@ -61,12 +61,16 @@ class MainActivity : AppCompatActivity() {
                     val codigoPais = countryCodeJson.getString("iso2")
 
                     val paisIndividual = Pais(nombrePais, numConfirmados, numMuertos, numRecuperados, codigoPais)
-                    arrayListaPaises.add(paisIndividual)
+                    arrayListaPaises!!.add(paisIndividual)
                 }
             }
             catch (e:JSONException){
                 Log.wtf("   Error JSON: ", e.localizedMessage)
             }
+
+            arrayListaPaises!!.sortByDescending { it.confirmados }
+
+            AdaptadorPaises!!.notifyDataSetChanged()
 
         },
         Response.ErrorListener { error ->  
@@ -74,8 +78,6 @@ class MainActivity : AppCompatActivity() {
         })
 
         queue.add(peticionDatosCovid)
-
-        AdaptadorPaises.notifyDataSetChanged()
     }
 
 
