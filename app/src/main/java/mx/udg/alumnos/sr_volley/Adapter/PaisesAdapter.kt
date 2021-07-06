@@ -4,8 +4,10 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
 import mx.udg.alumnos.sr_volley.Pais
 import mx.udg.alumnos.sr_volley.R
 
@@ -36,6 +38,8 @@ class PaisesAdapter (paises:ArrayList<Pais>, contexto:Context):RecyclerView.Adap
         holder.numeroConfirmados!!.text = "${listaPaises!![position].confirmados}"
         holder.numeroMuertos!!.text = "${listaPaises!![position].muertos}"
         holder.numeroRecuperados!!.text = "${listaPaises!![position].recuperados}"
+        Picasso.get().load("https://www.countryflags.io/${listaPaises!![position].CodigoPais}/flat/64.png").into(holder.bandera)
+
 
     }
 
@@ -51,6 +55,7 @@ class PaisesAdapter (paises:ArrayList<Pais>, contexto:Context):RecyclerView.Adap
         var numeroConfirmados:TextView?=null
         var numeroMuertos:TextView?=null
         var numeroRecuperados:TextView?=null
+        var bandera:ImageView?=null
 
 
         init {
@@ -59,6 +64,7 @@ class PaisesAdapter (paises:ArrayList<Pais>, contexto:Context):RecyclerView.Adap
             this.numeroConfirmados = vista.findViewById(R.id.tvConfirmados)
             this.numeroMuertos = vista.findViewById(R.id.tvMuertos)
             this.numeroRecuperados = vista.findViewById(R.id.tvRecuperados)
+            this.bandera = vista.findViewById(R.id.ivBandera)
 
         }
 

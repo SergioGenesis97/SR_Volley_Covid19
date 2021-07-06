@@ -57,8 +57,10 @@ class MainActivity : AppCompatActivity() {
                     val numConfirmados = paisJSON.getInt("confirmed")
                     val numMuertos = paisJSON.getInt("deaths")
                     val numRecuperados = paisJSON.getInt("recovered")
+                    val countryCodeJson = paisJSON.getJSONObject("countrycode")
+                    val codigoPais = countryCodeJson.getString("iso2")
 
-                    val paisIndividual = Pais(nombrePais, numConfirmados, numMuertos, numRecuperados)
+                    val paisIndividual = Pais(nombrePais, numConfirmados, numMuertos, numRecuperados, codigoPais)
                     arrayListaPaises.add(paisIndividual)
                 }
             }
